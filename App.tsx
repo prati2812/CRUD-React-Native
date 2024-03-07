@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useRef} from 'react';
 import { Text, View, StyleSheet, Button, TextInput, FlatList, Modal, ScrollView} from 'react-native';
 import style from './styles/style';
 
@@ -16,6 +16,10 @@ const App = () => {
 
   const [display , setDisplay] = useState(false);
   const [selectedUser , setSelectedUser] = useState([]);
+
+
+  const username = useRef();
+  const userEmail = useRef();
  
   const deleteData = async (id) => {
     const url = 'http://10.0.2.2:3000/users/';
@@ -34,6 +38,7 @@ const App = () => {
  const saveData = async () => {
      if(!name){
        setNameError(true);
+       username.current.focus();
      }
      else{
        setNameError(false);
@@ -41,6 +46,7 @@ const App = () => {
 
      if(!email){
        setEmailError(true);
+       userEmail.current.focus();
      }
      else{
        setEmailError(false);
@@ -53,6 +59,7 @@ const App = () => {
      let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
      if(!reg.test(email)){
        setEmailError(true);
+       userEmail.current.focus();
        return false;
      }
 
@@ -112,7 +119,7 @@ const App = () => {
 
 useEffect(() => {
     getData();
-},[]);
+},[saveData]);
 
 
     return (
@@ -123,6 +130,7 @@ useEffect(() => {
           style={style.item}
           onChangeText={text => setName(text)}
           value={name}
+          ref={username}
         />
         {nameError ? <Text style={style.error}>name is required</Text> : null}
         <TextInput
@@ -131,6 +139,7 @@ useEffect(() => {
           onChangeText={text => setEmail(text)}
           value={email}
           defaultValue={email}
+          ref={userEmail}
         />
         {email.length && emailError ? (
           <Text style={style.error}>please enter valid email</Text>
